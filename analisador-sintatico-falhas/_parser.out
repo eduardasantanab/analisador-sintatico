@@ -1,0 +1,190 @@
+Created by PLY (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    MAIN
+    PRINTLN
+    SCANF
+    VOID
+
+Grammar
+
+Rule 0     S' -> Programa
+Rule 1     Programa -> ListaDeclaracoes
+Rule 2     ListaDeclaracoes -> Declaracao
+Rule 3     ListaDeclaracoes -> ListaDeclaracoes Declaracao
+Rule 4     Declaracao -> DeclaracaoVariavel
+Rule 5     Declaracao -> DeclaracaoFuncao
+Rule 6     Declaracao -> Comentario
+Rule 7     Array -> ID LBRACKET Expression RBRACKET
+Rule 8     Array -> ID LBRACKET RBRACKET
+Rule 9     ArrayInicializacao -> LBRACE ExpressaoLista RBRACE
+Rule 10    ExpressaoLogica -> ExpressaoRelacional
+Rule 11    ExpressaoLogica -> ExpressaoLogica AND ExpressaoRelacional
+Rule 12    ExpressaoLogica -> ExpressaoLogica OR ExpressaoRelacional
+Rule 13    ExpressaoLogica -> NOT ExpressaoRelacional
+Rule 14    ExpressaoRelacional -> ExpressaoAritmetica
+Rule 15    ExpressaoRelacional -> ExpressaoAritmetica MAIOR_QUE ExpressaoAritmetica
+Rule 16    ExpressaoRelacional -> ExpressaoAritmetica MA_IGUAL ExpressaoAritmetica
+Rule 17    ExpressaoRelacional -> ExpressaoAritmetica MENOR_QUE ExpressaoAritmetica
+Rule 18    ExpressaoRelacional -> ExpressaoAritmetica ME_IGUAL ExpressaoAritmetica
+Rule 19    ExpressaoRelacional -> ExpressaoAritmetica DIF_DE ExpressaoAritmetica
+Rule 20    ExpressaoRelacional -> ExpressaoAritmetica COMPARA ExpressaoAritmetica
+Rule 21    ExpressaoAritmetica -> ExpressaoMultiplicativa
+Rule 22    ExpressaoAritmetica -> ExpressaoAritmetica PLUS ExpressaoMultiplicativa
+Rule 23    ExpressaoAritmetica -> ExpressaoAritmetica MINUS ExpressaoMultiplicativa
+Rule 24    ExpressaoMultiplicativa -> ExpressaoUnaria
+Rule 25    ExpressaoMultiplicativa -> ExpressaoMultiplicativa MULT ExpressaoUnaria
+Rule 26    ExpressaoMultiplicativa -> ExpressaoMultiplicativa DIV ExpressaoUnaria
+Rule 27    ExpressaoMultiplicativa -> ExpressaoMultiplicativa MOD ExpressaoUnaria
+Rule 28    ExpressaoUnaria -> ExpressaoPostfix
+Rule 29    ExpressaoUnaria -> MINUS ExpressaoUnaria
+Rule 30    ExpressaoUnaria -> PLUS ExpressaoUnaria
+Rule 31    ExpressaoUnaria -> INCREMENT ExpressaoPostfix
+Rule 32    ExpressaoUnaria -> DECREMENT ExpressaoPostfix
+Rule 33    ExpressaoPostfix -> Primaria
+Rule 34    ExpressaoPostfix -> Primaria LBRACKET Expression RBRACKET
+Rule 35    ExpressaoPostfix -> Primaria LPAREN Argumentos RPAREN
+Rule 36    ExpressaoPostfix -> Primaria DOT ID
+Rule 37    ExpressaoPostfix -> Primaria ARROW ID
+Rule 38    Argumentos -> ExpressaoLista
+Rule 39    Argumentos -> <empty>
+Rule 40    Primaria -> ID
+Rule 41    Primaria -> NUMBER
+Rule 42    Primaria -> NUM_DEC
+Rule 43    Primaria -> TEXTO
+Rule 44    Primaria -> LPAREN Expression RPAREN
+Rule 45    DeclaracaoEstrutura -> STRUCT ID LBRACE DeclaracaoVariavel RBRACE SEMICOLON
+Rule 46    Atribuicao -> ID EQUALS Expression
+Rule 47    Atribuicao -> ID PLUS EQUALS Expression
+Rule 48    Atribuicao -> ID MINUS EQUALS Expression
+Rule 49    Atribuicao -> ID MULT EQUALS Expression
+Rule 50    Atribuicao -> ID DIV EQUALS Expression
+Rule 51    Atribuicao -> ID MOD EQUALS Expression
+Rule 52    Atribuicao -> ID AND AND EQUALS Expression
+Rule 53    Atribuicao -> ID OR OR EQUALS Expression
+Rule 54    Atribuicao -> ID EQUALS ID
+Rule 55    Atribuicao -> ID PLUS EQUALS ID
+Rule 56    Atribuicao -> ID MINUS EQUALS ID
+Rule 57    Atribuicao -> ID MULT EQUALS ID
+Rule 58    Atribuicao -> ID DIV EQUALS ID
+Rule 59    Atribuicao -> ID MOD EQUALS ID
+Rule 60    Atribuicao -> ID AND AND EQUALS ID
+Rule 61    Atribuicao -> ID OR OR EQUALS ID
+Rule 62    EstruturaControle -> IF LPAREN Expression RPAREN Bloco
+Rule 63    EstruturaControle -> IF LPAREN Expression RPAREN Bloco ELSE Bloco
+Rule 64    EstruturaControle -> WHILE LPAREN Expression RPAREN Bloco
+Rule 65    EstruturaControle -> FOR LPAREN Expression SEMICOLON Expression SEMICOLON Expression RPAREN Bloco
+Rule 66    EstruturaControle -> SWITCH LPAREN Expression RPAREN CaseLista
+Rule 67    EstruturaControle -> BREAK SEMICOLON
+Rule 68    EstruturaControle -> CONTINUE SEMICOLON
+Rule 69    EstruturaControle -> RETURN Expression SEMICOLON
+Rule 70    CaseLista -> CaseDecl
+Rule 71    CaseLista -> CaseDecl CaseLista
+Rule 72    CaseDecl -> CASE Expression COLON Bloco
+Rule 73    CaseDecl -> DEFAULT COLON Bloco
+Rule 74    DeclaracaoVariavel -> Tipo ID SEMICOLON
+Rule 75    DeclaracaoVariavel -> Tipo ID EQUALS Expression SEMICOLON
+Rule 76    Tipo -> INT
+Rule 77    Tipo -> FLOAT
+Rule 78    Tipo -> DOUBLE
+Rule 79    Tipo -> CHAR
+Rule 80    Tipo -> BOOLEAN
+Rule 81    DeclaracaoFuncao -> Tipo ID LPAREN Parametros RPAREN Bloco
+Rule 82    Parametros -> Parametro
+Rule 83    Parametros -> Parametros COMMA Parametro
+Rule 84    Parametro -> Tipo ID
+Rule 85    Parametro -> Tipo ID LBRACKET RBRACKET
+Rule 86    Parametro -> Tipo DOT DOT DOT ID
+Rule 87    Bloco -> LBRACE Declaracao RBRACE
+Rule 88    Comentario -> COMMENTS
+Rule 89    Expression -> Atribuicao
+Rule 90    Expression -> ExpressaoLogica
+
+Terminals, with rules where they appear
+
+AND                  : 11 52 52 60 60
+ARROW                : 37
+BOOLEAN              : 80
+BREAK                : 67
+CASE                 : 72
+CHAR                 : 79
+COLON                : 72 73
+COMMA                : 83
+COMMENTS             : 88
+COMPARA              : 20
+CONTINUE             : 68
+DECREMENT            : 32
+DEFAULT              : 73
+DIF_DE               : 19
+DIV                  : 26 50 58
+DOT                  : 36 86 86 86
+DOUBLE               : 78
+ELSE                 : 63
+EQUALS               : 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 75
+FLOAT                : 77
+FOR                  : 65
+ID                   : 7 8 36 37 40 45 46 47 48 49 50 51 52 53 54 54 55 55 56 56 57 57 58 58 59 59 60 60 61 61 74 75 81 84 85 86
+IF                   : 62 63
+INCREMENT            : 31
+INT                  : 76
+LBRACE               : 9 45 87
+LBRACKET             : 7 8 34 85
+LPAREN               : 35 44 62 63 64 65 66 81
+MAIN                 : 
+MAIOR_QUE            : 15
+MA_IGUAL             : 16
+MENOR_QUE            : 17
+ME_IGUAL             : 18
+MINUS                : 23 29 48 56
+MOD                  : 27 51 59
+MULT                 : 25 49 57
+NOT                  : 13
+NUMBER               : 41
+NUM_DEC              : 42
+OR                   : 12 53 53 61 61
+PLUS                 : 22 30 47 55
+PRINTLN              : 
+RBRACE               : 9 45 87
+RBRACKET             : 7 8 34 85
+RETURN               : 69
+RPAREN               : 35 44 62 63 64 65 66 81
+SCANF                : 
+SEMICOLON            : 45 65 65 67 68 69 74 75
+STRUCT               : 45
+SWITCH               : 66
+TEXTO                : 43
+VOID                 : 
+WHILE                : 64
+error                : 
+
+Nonterminals, with rules where they appear
+
+Argumentos           : 35
+Array                : 
+ArrayInicializacao   : 
+Atribuicao           : 89
+Bloco                : 62 63 63 64 65 72 73 81
+CaseDecl             : 70 71
+CaseLista            : 66 71
+Comentario           : 6
+Declaracao           : 2 3 87
+DeclaracaoEstrutura  : 
+DeclaracaoFuncao     : 5
+DeclaracaoVariavel   : 4 45
+EstruturaControle    : 
+ExpressaoAritmetica  : 14 15 15 16 16 17 17 18 18 19 19 20 20 22 23
+ExpressaoLista       : 9 38
+ExpressaoLogica      : 11 12 90
+ExpressaoMultiplicativa : 21 22 23 25 26 27
+ExpressaoPostfix     : 28 31 32
+ExpressaoRelacional  : 10 11 12 13
+ExpressaoUnaria      : 24 25 26 27 29 30
+Expression           : 7 34 44 46 47 48 49 50 51 52 53 62 63 64 65 65 65 66 69 72 75
+ListaDeclaracoes     : 1 3
+Parametro            : 82 83
+Parametros           : 81 83
+Primaria             : 33 34 35 36 37
+Programa             : 0
+Tipo                 : 74 75 81 84 85 86
+
