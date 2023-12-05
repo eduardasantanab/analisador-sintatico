@@ -125,7 +125,13 @@ def t_error(t):
 
 
 code = '''
-int contador = 0;
+//testa comentário no código
+int contador;
+double x;
+int array[]
+
+struct x{int cont = 0;};
+return contador = x;
 '''
 # Contrução do analisador léxico
 lexer = lex.lex()
