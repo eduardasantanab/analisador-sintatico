@@ -491,6 +491,7 @@ yacc.yacc(debug=True)
 
 # Teste do analisador
 result = parser.parse(code)
+print(f"Resultado '{code}': {result}")
+
 if(result != None):
- print(f"Resultado '{code}': {result}")
  print("O código está correto!")
