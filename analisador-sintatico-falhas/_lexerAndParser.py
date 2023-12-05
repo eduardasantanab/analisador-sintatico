@@ -1,4 +1,4 @@
-import lex, yacc
+import _lex, _yacc
 
 #Dupla: Maria Eduarda Santana e Gustavo Pereira 
 # ANALISADOR LÉXICO 
@@ -128,7 +128,7 @@ code = '''
 int contador = 0;
 '''
 # Contrução do analisador léxico
-lexer = lex.lex()
+lexer = _lex.lex()
 lexer.input(code)
 
 #for token in lexer:
@@ -470,8 +470,8 @@ def p_error(p):
     p.lexer.skip(1)
     
     
-parser = yacc.yacc()
-yacc.yacc(debug=True)
+parser = _yacc.yacc()
+_yacc.yacc(debug=True)
 
 # Teste do analisador
 result = parser.parse(code)
