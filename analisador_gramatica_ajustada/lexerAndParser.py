@@ -132,6 +132,10 @@ array[]
 
 struct x{int cont = 0;}; // declaração estrutura  
 return contador = x; // estrutura de controle
+
+double calcularMedia(int numero1, float numero2) {
+  double media;
+}
 '''
 # Contrução do analisador léxico
 lexer = lex.lex()
