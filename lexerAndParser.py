@@ -125,7 +125,7 @@ def t_error(t):
 
 code = '''
 int x = 2;
-void fun(int a, double b, char c[]) {
+void main(int a, double b, char c[]) {
     int result;
     result = x + 2;
     if (result > 0) {
@@ -167,25 +167,42 @@ def p_declaracao(p):
                | array
                |
     '''
+    p[0] = p[1]
 
 def p_array(p):
     '''
     array : ID LBRACKET expression RBRACKET
           | ID LBRACKET RBRACKET
     '''
+    if len(p) == 5:
+        # Array com tamanho especificado
+        p[0] = {'id': p[1], 'tamanho': p[3]}
+    else:
+        # Array sem tamanho especificado
+        p[0] = {'id': p[1], 'tamanho': None}
 
-def p_array_inicializacao(p):
+
+def p_ArrayInicializacao(p):
     'ArrayInicializacao : LBRACE ExpressaoLista RBRACE'
+    p[0] = {'expressions': p[2]}
 
-def p_expressao_logica(p):
+def p_ExpressaoLogica(p):
     '''
     ExpressaoLogica : ExpressaoRelacional
                    | ExpressaoLogica AND ExpressaoRelacional
                    | ExpressaoLogica OR ExpressaoRelacional
                    | NOT ExpressaoRelacional
     '''
+    if len(p) == 2:
+        p[0] = p[1]
+    elif p[2].lower() == 'and':
+        p[0] = {'op': 'and', 'left': p[1], 'right': p[3]}
+    elif p[2].lower() == 'or':
+        p[0] = {'op': 'or', 'left': p[1], 'right': p[3]}
+    elif p[1].lower() == 'not':
+        p[0] = {'op': 'not', 'expr': p[2]}
 
-def p_expressao_relacional(p):
+def p_ExpressaoRelacional(p):
     '''
     ExpressaoRelacional : ExpressaoAritmetica
                        | ExpressaoAritmetica MAIOR_QUE ExpressaoAritmetica
@@ -195,23 +212,38 @@ def p_expressao_relacional(p):
                        | ExpressaoAritmetica DIF_DE ExpressaoAritmetica
                        | ExpressaoAritmetica COMPARA ExpressaoAritmetica
     '''
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 4:
+        p[0] = {'op': p[2], 'left': p[1], 'right': p[3]}
 
-def p_expressao_aritmetica(p):
+
+def p_ExpressaoAritmetica(p):
     '''
     ExpressaoAritmetica : ExpressaoMultiplicativa
                        | ExpressaoAritmetica PLUS ExpressaoMultiplicativa
                        | ExpressaoAritmetica MINUS ExpressaoMultiplicativa
     '''
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 4:
+        p[0] = {'op': p[2], 'left': p[1], 'right': p[3]}
 
-def p_expressao_multiplicativa(p):
+
+def p_ExpressaoMultiplicativa(p):
     '''
     ExpressaoMultiplicativa : ExpressaoUnaria
                           | ExpressaoMultiplicativa MULT ExpressaoUnaria
                           | ExpressaoMultiplicativa DIV ExpressaoUnaria
                           | ExpressaoMultiplicativa MOD ExpressaoUnaria
     '''
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 4:
+        p[0] = {'op': p[2], 'left': p[1], 'right': p[3]}
 
-def p_expressao_unaria(p):
+
+def p_ExpressaoUnaria(p):
     '''
     ExpressaoUnaria : ExpressaoPostfix
                    | MINUS ExpressaoUnaria
@@ -219,8 +251,13 @@ def p_expressao_unaria(p):
                    | INCREMENT ExpressaoPostfix
                    | DECREMENT ExpressaoPostfix
     '''
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 3:
+        p[0] = {'op': p[1], 'operand': p[2]}
 
-def p_expressao_postfix(p):
+
+def p_ExpressaoPostfix(p):
     '''
     ExpressaoPostfix : Primaria
                     | Primaria LBRACKET expression RBRACKET
@@ -228,25 +265,50 @@ def p_expressao_postfix(p):
                     | Primaria DOT ID
                     | Primaria ARROW ID
     '''
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 5:
+        if p[2] == '[':
+            p[0] = {'op': 'INDEX', 'array': p[1], 'index': p[3]}
+        elif p[2] == '(':
+            p[0] = {'op': 'CALL', 'function': p[1], 'arguments': p[3]}
+    elif len(p) == 4:
+        if p[2] == '.':
+            p[0] = {'op': 'MEMBER', 'struct': p[1], 'member': p[3]}
+        elif p[2] == '->':
+            p[0] = {'op': 'PTR_MEMBER', 'struct_ptr': p[1], 'member': p[3]}
+
 
 def p_argumentos(p):
     '''
     argumentos :  ExpressaoLista 
                |
     '''
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = None  
+
+
 
 def p_primaria(p):
     '''
     Primaria : ID
-            | NUMBER
-            | NUM_DEC
-            | TEXTO
-            | LPAREN expression RPAREN
+             | NUMBER
+             | NUM_DEC
+             | TEXTO
+             | LPAREN expression RPAREN
     '''
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 4:
+        p[0] = p[2]
+
 
 
 def p_declaracao_estrutura(p):
     'DeclaracaoEstrutura : STRUCT ID LBRACE DeclaracaoVariavel RBRACE SEMICOLON'
+    p[0] = {'type': 'struct', 'name': p[2], 'declaracao_variavel': p[4]}
 
 
 def p_atribuicao(p):
@@ -268,6 +330,11 @@ def p_atribuicao(p):
                | ID AND AND EQUALS ID
                | ID OR OR EQUALS ID
     '''
+    if len(p) == 4:
+        p[0] = {'type': 'atribuicao', 'left': p[1], 'operator': p[2], 'right': p[3]}
+    else:
+        p[0] = {'type': 'atribuicao', 'left': p[1], 'operator': p[2], 'right': p[4]}
+
 
 def p_estrutura_controle(p):
     '''
@@ -280,25 +347,60 @@ def p_estrutura_controle(p):
                      | CONTINUE SEMICOLON
                      | RETURN expression SEMICOLON
     '''
+    if p[1] == 'if':
+        if len(p) == 6:
+            p[0] = {'type': 'if', 'condition': p[3], 'body': p[5]}
+        else:
+            p[0] = {'type': 'if-else', 'condition': p[3], 'if_body': p[5], 'else_body': p[7]}
+    elif p[1] == 'while':
+        p[0] = {'type': 'while', 'condition': p[3], 'body': p[5]}
+    elif p[1] == 'for':
+        p[0] = {'type': 'for', 'init': p[3], 'condition': p[5], 'update': p[7], 'body': p[9]}
+    elif p[1] == 'switch':
+        p[0] = {'type': 'switch', 'expression': p[3], 'cases': p[5]}
+    elif p[1] == 'break':
+        p[0] = {'type': 'break'}
+    elif p[1] == 'continue':
+        p[0] = {'type': 'continue'}
+    elif p[1] == 'return':
+        p[0] = {'type': 'return', 'expression': p[2]}
+
 
 def p_case_lista(p):
     '''
     CaseLista : CaseDecl
               | CaseDecl CaseLista
     '''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = [p[1]] + p[2]
+
 
 def p_case_decl(p):
     '''
     CaseDecl : CASE expression COLON Bloco
              | DEFAULT COLON Bloco
     '''
+    if p[1] == 'case':
+        p[0] = ('case', p[2], p[4])
+    else:
+        p[0] = ('default', p[3])
 
 
-def p_declaracao_variavel(p):
+
+def p_DeclaracaoVariavel(p):
     '''
     DeclaracaoVariavel : Tipo ID SEMICOLON
-                      | Tipo ID EQUALS expression SEMICOLON
+                     | Tipo ID EQUALS expression SEMICOLON
     '''
+    if len(p) == 4:
+        # A declaração sem uma expressão (Tipo ID SEMICOLON)
+        p[0] = {'tipo': p[1], 'id': p[2]}
+    else:
+        # A declaração com uma expressão (Tipo ID EQUALS expression SEMICOLON)
+        p[0] = {'tipo': p[1], 'id': p[2], 'expressao': p[4]}
+
 
 def p_tipo(p):
     '''
@@ -308,15 +410,23 @@ def p_tipo(p):
          | CHAR
          | BOOLEAN
     '''
+    p[0] = p[1]
 
 def p_declaracao_funcao(p):
     'DeclaracaoFuncao : Tipo ID LPAREN Parametros RPAREN Bloco'
+    p[0] = {'tipo': p[1], 'nome': p[2], 'parametros': p[4], 'bloco': p[6]}
+
 
 def p_parametros(p):
     '''
     Parametros : Parametro
-               | Parametro COMMA Parametro
+               | Parametros COMMA Parametro
     '''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[1] + [p[3]]
+
 
 def p_parametro(p):
     '''
@@ -324,12 +434,22 @@ def p_parametro(p):
              | Tipo ID LBRACKET RBRACKET
              | Tipo DOT DOT DOT ID
     '''
+    if len(p) == 3:
+        p[0] = (p[1], p[2])  # Representa um parâmetro sem dimensão ou elipse
+    elif len(p) == 5:
+        if p[3] == '...':
+            p[0] = (p[1], '...')
+        else:
+            p[0] = (p[1], p[2], p[3], p[4])  # Representa um parâmetro com dimensão
+
 
 def p_bloco(p):
     'Bloco : LBRACE Declaracao RBRACE'
+    p[0] = p[2]
 
 def p_comentario(p):
     'Comentario : COMMENTS'
+    pass
 
 def p_expression(p):
  '''
