@@ -1,6 +1,7 @@
 import lex, yacc
 
-# ANALISADOR LÉXICO
+#Dupla: Maria Eduarda Santana e Gustavo Pereira 
+# ANALISADOR LÉXICO 
 
 # Definição palavras reservadas
 reserved = {
