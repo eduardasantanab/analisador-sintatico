@@ -125,13 +125,13 @@ def t_error(t):
 
 
 code = '''
-//testa declaração de variáveis e de array em comentário
+// testa declaração de variáveis e de array em comentário
 int contador; 
 double x;
 array[]
 
-struct x{int cont = 0;}; //declaração estrutura e estrutura de controle 
-return contador = x;
+struct x{int cont = 0;}; // declaração estrutura  
+return contador = x; // estrutura de controle
 '''
 # Contrução do analisador léxico
 lexer = lex.lex()
