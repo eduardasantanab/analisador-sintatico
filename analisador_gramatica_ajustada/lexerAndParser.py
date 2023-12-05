@@ -128,7 +128,7 @@ code = '''
 //testa comentário no código
 int contador;
 double x;
-int array[]
+array[]
 
 struct x{int cont = 0;};
 return contador = x;
