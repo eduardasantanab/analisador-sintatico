@@ -1,5 +1,7 @@
 import lex, yacc
 
+# ANALISADOR LÉXICO
+
 # Definição palavras reservadas
 reserved = {
    'int' : 'INT',
@@ -101,13 +103,13 @@ def t_NUMBER(t):
  t.value = int(t.value)
  return t
 
-# Ignorar espaços em branco e tabulações
+# Ignora espaços em branco e tabulações
 t_ignore = ' \t'
 
 # Regra para token ID
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
-    t.type = reserved.get(t.value.lower(), 'ID')  # Converta para minúsculas antes de verificar as palavras reservadas
+    t.type = reserved.get(t.value.lower(), 'ID')  # Converte para minúsculas antes de verificar as palavras reservadas
     return t
 
 #Define a rule so we can track line numbers
@@ -142,7 +144,7 @@ for token in lexer:
 
 ##############################################################################################################
 
-# Regras de produção para o analisador sintático
+# ANALISADROR SINTÁTICO
 
 
 # Adiciona informações de precedência
@@ -226,7 +228,6 @@ def p_expressao_postfix(p):
                     | Primaria DOT ID
                     | Primaria ARROW ID
     '''
-    # Adicione ações semânticas se necessário
 
 def p_argumentos(p):
     '''
