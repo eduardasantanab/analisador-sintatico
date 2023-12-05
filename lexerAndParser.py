@@ -29,9 +29,8 @@ reserved = {
 # Definição de tokens
 tokens = ['ID',
           'NUMBER',
-          'OPERADOR',
           'TEXTO',
-          'VIRGULA',
+          'COMMA',
           'NUM_DEC',
           'MINUS',
           'PLUS',
@@ -50,12 +49,27 @@ tokens = ['ID',
           'COLON',
           'AND',
           'OR',
-          'MOD',] + list(reserved.values())
+          'MOD',
+          'NOT',
+          'INCREMENT',
+          'DECREMENT',
+          'MAIOR_QUE',
+          'MENOR_QUE',
+          'MA_IGUAL',
+          'ME_IGUAL',
+          'DIF_DE',
+          'COMPARA',
+          'ARROW',] + list(reserved.values())
 
 # Regras para tokens simples
 t_NUM_DEC = r'\d+\.\d+'
-t_OPERADOR = r'\!|\>|\>\=|\<|\<\=|\!\=|\=\='
-t_VIRGULA = r'\,'
+t_MAIOR_QUE = r'\>'
+t_MENOR_QUE = r'\<'
+t_MA_IGUAL = r'\>\='
+t_ME_IGUAL = r'\<\='
+t_DIF_DE = r'\!\='
+t_COMPARA = r'\=\='
+t_COMMA = r'\,'
 t_TEXTO = r'".*"'
 t_MINUS = r'-'
 t_PLUS = r'\+'
@@ -75,6 +89,10 @@ t_COLON = r':'
 t_AND = r'\&\&'
 t_OR = r'\|\|'
 t_MOD = r'\%'
+t_NOT = r'\!'
+t_INCREMENT = r'\+\+'
+t_DECREMENT = r'\-\-'
+t_ARROW = r'\-\>'
 
 
 # Regra para token NUMBER
@@ -144,11 +162,91 @@ def p_declaracao(p):
                | DeclaracaoEstrutura
                | EstruturaControle
                | expression
+               | array
                |
     '''
 
+def p_array(p):
+    '''
+    array : ID LBRACKET expression RBRACKET
+          | ID LBRACKET RBRACKET
+    '''
+
+def p_array_inicializacao(p):
+    'ArrayInicializacao : LBRACE ExpressaoLista RBRACE'
+
+def p_expressao_logica(p):
+    '''
+    ExpressaoLogica : ExpressaoRelacional
+                   | ExpressaoLogica AND ExpressaoRelacional
+                   | ExpressaoLogica OR ExpressaoRelacional
+                   | NOT ExpressaoRelacional
+    '''
+
+def p_expressao_relacional(p):
+    '''
+    ExpressaoRelacional : ExpressaoAritmetica
+                       | ExpressaoAritmetica MAIOR_QUE ExpressaoAritmetica
+                       | ExpressaoAritmetica MA_IGUAL ExpressaoAritmetica
+                       | ExpressaoAritmetica MENOR_QUE ExpressaoAritmetica
+                       | ExpressaoAritmetica ME_IGUAL ExpressaoAritmetica
+                       | ExpressaoAritmetica DIF_DE ExpressaoAritmetica
+                       | ExpressaoAritmetica COMPARA ExpressaoAritmetica
+    '''
+
+def p_expressao_aritmetica(p):
+    '''
+    ExpressaoAritmetica : ExpressaoMultiplicativa
+                       | ExpressaoAritmetica PLUS ExpressaoMultiplicativa
+                       | ExpressaoAritmetica MINUS ExpressaoMultiplicativa
+    '''
+
+def p_expressao_multiplicativa(p):
+    '''
+    ExpressaoMultiplicativa : ExpressaoUnaria
+                          | ExpressaoMultiplicativa MULT ExpressaoUnaria
+                          | ExpressaoMultiplicativa DIV ExpressaoUnaria
+                          | ExpressaoMultiplicativa MOD ExpressaoUnaria
+    '''
+
+def p_expressao_unaria(p):
+    '''
+    ExpressaoUnaria : ExpressaoPostfix
+                   | MINUS ExpressaoUnaria
+                   | PLUS ExpressaoUnaria
+                   | INCREMENT ExpressaoPostfix
+                   | DECREMENT ExpressaoPostfix
+    '''
+
+def p_expressao_postfix(p):
+    '''
+    ExpressaoPostfix : Primaria
+                    | Primaria LBRACKET expression RBRACKET
+                    | Primaria LPAREN argumentos RPAREN
+                    | Primaria DOT ID
+                    | Primaria ARROW ID
+    '''
+    # Adicione ações semânticas se necessário
+
+def p_argumentos(p):
+    '''
+    argumentos :  ExpressaoLista 
+               |
+    '''
+
+def p_primaria(p):
+    '''
+    Primaria : ID
+            | NUMBER
+            | NUM_DEC
+            | TEXTO
+            | LPAREN expression RPAREN
+    '''
+
+
 def p_declaracao_estrutura(p):
     'DeclaracaoEstrutura : STRUCT ID LBRACE DeclaracaoVariavel RBRACE SEMICOLON'
+
 
 def p_atribuicao(p):
     '''
@@ -216,7 +314,7 @@ def p_declaracao_funcao(p):
 def p_parametros(p):
     '''
     Parametros : Parametro
-               | Parametro VIRGULA Parametro
+               | Parametro COMMA Parametro
     '''
 
 def p_parametro(p):
@@ -238,6 +336,7 @@ def p_expression(p):
  | expression MINUS term
  | term
  | atribuicao
+ | ExpressaoLogica
  '''
  if len(p) == 2:
         p[0] = p[1]
