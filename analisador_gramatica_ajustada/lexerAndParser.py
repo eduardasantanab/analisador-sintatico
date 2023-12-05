@@ -185,6 +185,7 @@ def p_declaracao(p):
                | Array
                | DeclaracaoEstrutura
                | EstruturaControle
+               | Expression
     '''
     p[0] = p[1]
 
@@ -206,7 +207,7 @@ def p_ArrayInicializacao(p):
     p[0] = {'expressions': p[2]}
 
 def p_ExpressaoLista(p):
-    'ExpressaoLista : '
+    'ExpressaoLista : ID'
 
 def p_ExpressaoLogica(p):
     '''
@@ -479,17 +480,17 @@ def p_expression(p):
     p[0] = p[1]  
 
 
-# Error rule for syntax errors
-def p_error(p):
-    print("Syntax error!")
-    p.lexer.skip(1)
-    
+#Error handling rule
+def p_error(t):
+    print(f"Syntax Error: Illegal character '{t.value[0]}' at line {t.lineno}")
+    t.lexer.skip(1)
+
     
 parser = yacc.yacc()
 yacc.yacc(debug=True)
 
 # Teste do analisador
 result = parser.parse(code)
-print(f"Resultado '{code}': {result}")
 if(result != None):
+ print(f"Resultado '{code}': {result}")
  print("O código está correto!")
